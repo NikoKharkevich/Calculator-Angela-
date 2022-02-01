@@ -37,6 +37,17 @@ class ViewController: UIViewController {
                 displayLabel.text = numValue
                 isFinishedTypingNumber = false
             } else {
+                
+                if numValue == "." {
+                    guard let currentDisplayValue = Double(displayLabel.text!) else {fatalError()}
+                    
+                    // checking rounded down value to ensure we have only one dot
+                    let isInt = floor(currentDisplayValue) == currentDisplayValue
+                    
+                    // if we dont have an Integer we return dont continue appending current number value to the display 
+                    if !isInt { return }
+                }
+                
                 displayLabel.text = displayLabel.text! + numValue
             }
             

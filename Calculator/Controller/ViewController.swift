@@ -7,24 +7,30 @@ class ViewController: UIViewController {
     
     private var isFinishedTypingNumber: Bool = true
     
+    private var displayValue: Double {
+        get {
+            guard let number = Double(displayLabel.text!) else { fatalError() }
+            return number
+        }
+        
+        set {
+            displayLabel.text = String(newValue)
+        }
+    }
+        
+    private var calculator = CalculatorLogic()
     
     //What should happen when a non-number button is pressed
     @IBAction func calcButtonPressed(_ sender: UIButton) {
         
         isFinishedTypingNumber = true
         
-        guard let number = Double(displayLabel.text!) else {
-            fatalError()
-        }
+        calculator.setNumber(displayValue)
         
         if let calcMethod = sender.currentTitle {
-            if calcMethod == "+/-" {
-                displayLabel.text = String(number * -1)
-            } else if calcMethod == "AC" {
-                displayLabel.text = "0"
-            } else if calcMethod == "%" {
-                displayLabel.text = String(number / 100)
-            }
+            
+            guard let result = calculator.calculate(symbol: calcMethod) else { fatalError() }
+            displayValue = result
         }
         
     }
@@ -39,12 +45,11 @@ class ViewController: UIViewController {
             } else {
                 
                 if numValue == "." {
-                    guard let currentDisplayValue = Double(displayLabel.text!) else {fatalError()}
                     
                     // checking rounded down value to ensure we have only one dot
-                    let isInt = floor(currentDisplayValue) == currentDisplayValue
+                    let isInt = floor(displayValue) == displayValue
                     
-                    // if we dont have an Integer we return dont continue appending current number value to the display 
+                    // if we dont have an Integer we return dont continue appending current number value to the display
                     if !isInt { return }
                 }
                 
@@ -52,8 +57,6 @@ class ViewController: UIViewController {
             }
             
         }
-    
     }
-
 }
 
